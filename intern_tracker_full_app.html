@@ -1,0 +1,364 @@
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:var(--font-sans);background:var(--color-background-tertiary);color:var(--color-text-primary)}
+.app{min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--color-background-primary);border-bottom:0.5px solid var(--color-border-tertiary);padding:0 20px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100}
+.topbar-brand{display:flex;align-items:center;gap:8px;font-size:15px;font-weight:500}
+.brand-dot{width:28px;height:28px;border-radius:8px;background:#3B3F99;display:flex;align-items:center;justify-content:center;color:#fff;font-size:13px;font-weight:500}
+.main{flex:1;padding:20px;max-width:1100px;margin:0 auto;width:100%}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
+.stat{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px 14px}
+.stat-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
+.stat-val{font-size:22px;font-weight:500}
+.stat-val.blue{color:#185FA5}.stat-val.green{color:#3B6D11}.stat-val.amber{color:#854F0B}.stat-val.red{color:#A32D2D}
+.toolbar{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);padding:12px;display:flex;gap:10px;align-items:center;margin-bottom:12px;flex-wrap:wrap}
+.search-wrap{flex:1;min-width:160px;position:relative}
+.search-wrap i{position:absolute;left:10px;top:50%;transform:translateY(-50%);color:var(--color-text-secondary);font-size:15px}
+.search-wrap input{padding-left:32px;width:100%}
+input,select{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 10px;font-size:13px;background:var(--color-background-primary);color:var(--color-text-primary);outline:none;font-family:var(--font-sans)}
+input:focus,select:focus{border-color:#185FA5;box-shadow:0 0 0 2px #185FA520}
+.btn{border:0.5px solid var(--color-border-secondary);border-radius:var(--border-radius-md);padding:7px 14px;font-size:13px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans);display:inline-flex;align-items:center;gap:6px;white-space:nowrap;transition:background 0.12s}
+.btn:hover{background:var(--color-background-secondary)}
+.btn.primary{background:#3B3F99;color:#fff;border-color:#3B3F99}
+.btn.primary:hover{background:#2e3280}
+.btn.danger{color:#A32D2D;border-color:#A32D2D20}
+.btn.danger:hover{background:#FCEBEB}
+.btn.sm{padding:4px 10px;font-size:12px}
+.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);overflow:hidden}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{padding:9px 12px;text-align:left;font-size:11px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.05em;border-bottom:0.5px solid var(--color-border-tertiary);background:var(--color-background-secondary)}
+td{padding:10px 12px;border-bottom:0.5px solid var(--color-border-tertiary);color:var(--color-text-primary);vertical-align:middle}
+tr:last-child td{border-bottom:none}
+tr:hover td{background:var(--color-background-secondary)}
+.badge{display:inline-flex;align-items:center;gap:5px;padding:2px 9px;border-radius:999px;font-size:11px;font-weight:500}
+.badge-dot{width:6px;height:6px;border-radius:50%}
+.role-fe{background:#E6F1FB;color:#185FA5}
+.role-be{background:#EAF3DE;color:#3B6D11}
+.role-fs{background:#EEEDFE;color:#534AB7}
+.st-applied{background:#F1EFE8;color:#5F5E5A}
+.st-interviewing{background:#FAEEDA;color:#854F0B}
+.st-hired{background:#EAF3DE;color:#3B6D11}
+.st-rejected{background:#FCEBEB;color:#A32D2D}
+.score-wrap{display:flex;align-items:center;gap:8px}
+.score-bar{flex:1;height:5px;background:var(--color-background-secondary);border-radius:999px;overflow:hidden;min-width:50px}
+.score-fill{height:100%;border-radius:999px;transition:width 0.4s}
+.score-num{font-size:12px;font-weight:500;min-width:24px;text-align:right}
+.avatar{width:30px;height:30px;border-radius:50%;background:#3B3F9920;color:#3B3F99;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:500;flex-shrink:0}
+.name-cell{display:flex;align-items:center;gap:8px}
+.pager{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;font-size:13px;color:var(--color-text-secondary);border-top:0.5px solid var(--color-border-tertiary)}
+.page-btns{display:flex;gap:4px}
+.page-btn{border:0.5px solid var(--color-border-secondary);border-radius:6px;padding:4px 10px;font-size:12px;cursor:pointer;background:var(--color-background-primary);color:var(--color-text-primary);font-family:var(--font-sans)}
+.page-btn.active{background:#3B3F99;color:#fff;border-color:#3B3F99}
+.page-btn:hover:not(.active){background:var(--color-background-secondary)}
+.page-btn:disabled{opacity:0.4;cursor:default}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.35);z-index:200;display:flex;align-items:center;justify-content:center;padding:20px}
+.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);padding:24px;width:100%;max-width:480px;border:0.5px solid var(--color-border-tertiary)}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-title{font-size:16px;font-weight:500}
+.close-btn{border:none;background:none;cursor:pointer;color:var(--color-text-secondary);font-size:20px;line-height:1;padding:2px}
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
+.form-full{grid-column:1/-1}
+.form-group{display:flex;flex-direction:column;gap:5px}
+.form-label{font-size:12px;font-weight:500;color:var(--color-text-secondary);text-transform:uppercase;letter-spacing:0.04em}
+.form-group input,.form-group select{width:100%}
+.form-row{display:flex;justify-content:flex-end;gap:8px;margin-top:4px}
+.range-wrap{display:flex;align-items:center;gap:10px}
+.range-wrap input[type=range]{flex:1;accent-color:#3B3F99}
+.range-val{font-size:13px;font-weight:500;min-width:28px;text-align:right}
+.confirm-body{text-align:center;padding:8px 0 16px}
+.confirm-icon{font-size:40px;margin-bottom:12px}
+.confirm-name{font-weight:500;font-size:15px}
+.err-banner{background:#FCEBEB;border:0.5px solid #F7C1C1;border-radius:var(--border-radius-md);padding:10px 14px;font-size:13px;color:#A32D2D;margin-bottom:12px;display:flex;justify-content:space-between;align-items:flex-start}
+.spinner-wrap{padding:40px;display:flex;flex-direction:column;align-items:center;gap:12px;color:var(--color-text-secondary);font-size:13px}
+.spinner{width:24px;height:24px;border:2px solid var(--color-border-tertiary);border-top-color:#3B3F99;border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.empty{padding:48px;text-align:center;color:var(--color-text-secondary)}
+.empty i{font-size:40px;margin-bottom:10px;display:block;opacity:0.4}
+.tag{display:inline-block;padding:2px 8px;border-radius:4px;font-size:11px;background:var(--color-background-secondary);color:var(--color-text-secondary)}
+</style>
+
+<div class="app" id="app">
+<div class="topbar">
+  <div class="topbar-brand">
+    <div class="brand-dot">IT</div>
+    Intern Tracker
+  </div>
+  <button class="btn primary" id="openAdd"><i class="ti ti-plus" aria-hidden="true"></i> Add Intern</button>
+</div>
+<div class="main">
+  <div class="stats-grid" id="statsGrid"></div>
+  <div class="toolbar">
+    <div class="search-wrap">
+      <i class="ti ti-search" aria-hidden="true"></i>
+      <input type="text" id="searchInput" placeholder="Search by name or email…">
+    </div>
+    <select id="roleFilter"><option value="">All Roles</option><option>Frontend</option><option>Backend</option><option>Fullstack</option></select>
+    <select id="statusFilter"><option value="">All Statuses</option><option>Applied</option><option>Interviewing</option><option>Hired</option><option>Rejected</option></select>
+  </div>
+  <div class="card">
+    <div id="tableArea"></div>
+    <div class="pager" id="pagerArea"></div>
+  </div>
+</div>
+</div>
+
+<div class="overlay" id="addModal" style="display:none">
+<div class="modal">
+  <div class="modal-head">
+    <span class="modal-title" id="modalTitle">Add new intern</span>
+    <button class="close-btn" id="closeModal"><i class="ti ti-x"></i></button>
+  </div>
+  <div id="formErr" style="display:none" class="err-banner"></div>
+  <div class="form-grid">
+    <div class="form-group">
+      <label class="form-label">Full name</label>
+      <input type="text" id="f_name" placeholder="Jane Doe">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Email</label>
+      <input type="email" id="f_email" placeholder="jane@example.com">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Role</label>
+      <select id="f_role"><option>Frontend</option><option>Backend</option><option>Fullstack</option></select>
+    </div>
+    <div class="form-group">
+      <label class="form-label">Status</label>
+      <select id="f_status"><option>Applied</option><option>Interviewing</option><option>Hired</option><option>Rejected</option></select>
+    </div>
+    <div class="form-group form-full">
+      <label class="form-label">Score — <span id="scoreLabel">50</span>/100</label>
+      <div class="range-wrap">
+        <input type="range" id="f_score" min="0" max="100" value="50" step="1">
+      </div>
+    </div>
+  </div>
+  <div class="form-row">
+    <button class="btn" id="cancelModal">Cancel</button>
+    <button class="btn primary" id="submitForm"><i class="ti ti-check"></i> <span id="submitLabel">Add intern</span></button>
+  </div>
+</div>
+</div>
+
+<div class="overlay" id="delModal" style="display:none">
+<div class="modal" style="max-width:360px">
+  <div class="modal-head">
+    <span class="modal-title">Confirm deletion</span>
+    <button class="close-btn" id="closeDelModal"><i class="ti ti-x"></i></button>
+  </div>
+  <div class="confirm-body">
+    <div class="confirm-icon"><i class="ti ti-trash" style="color:#A32D2D;font-size:36px"></i></div>
+    <p style="font-size:14px;color:var(--color-text-secondary);margin-bottom:6px">Are you sure you want to delete</p>
+    <p class="confirm-name" id="delName"></p>
+    <p style="font-size:12px;color:var(--color-text-secondary);margin-top:6px">This action cannot be undone.</p>
+  </div>
+  <div class="form-row">
+    <button class="btn" id="cancelDel">Cancel</button>
+    <button class="btn danger" id="confirmDel"><i class="ti ti-trash"></i> Delete</button>
+  </div>
+</div>
+</div>
+
+<script>
+const ROLES=['Frontend','Backend','Fullstack'];
+const STATUSES=['Applied','Interviewing','Hired','Rejected'];
+const ROLE_CLS={Frontend:'role-fe',Backend:'role-be',Fullstack:'role-fs'};
+const ST_CLS={Applied:'st-applied',Interviewing:'st-interviewing',Hired:'st-hired',Rejected:'st-rejected'};
+const SCORE_COLOR=s=>s>=80?'#3B6D11':s>=60?'#854F0B':s>=40?'#185FA5':'#A32D2D';
+
+let data=[
+  {id:1,name:'Alice Chen',email:'alice@acme.com',role:'Frontend',status:'Hired',score:92,createdAt:'2025-03-01'},
+  {id:2,name:'Bob Smith',email:'bob@acme.com',role:'Backend',status:'Interviewing',score:74,createdAt:'2025-03-05'},
+  {id:3,name:'Carol Davis',email:'carol@acme.com',role:'Fullstack',status:'Applied',score:88,createdAt:'2025-03-08'},
+  {id:4,name:'Dan Kim',email:'dan@acme.com',role:'Frontend',status:'Rejected',score:41,createdAt:'2025-03-10'},
+  {id:5,name:'Eve Johnson',email:'eve@acme.com',role:'Backend',status:'Hired',score:95,createdAt:'2025-03-12'},
+  {id:6,name:'Frank Lee',email:'frank@acme.com',role:'Fullstack',status:'Interviewing',score:67,createdAt:'2025-03-14'},
+  {id:7,name:'Grace Wu',email:'grace@acme.com',role:'Frontend',status:'Applied',score:55,createdAt:'2025-03-15'},
+  {id:8,name:'Hiro Tanaka',email:'hiro@acme.com',role:'Backend',status:'Hired',score:89,createdAt:'2025-03-18'},
+  {id:9,name:'Iris Patel',email:'iris@acme.com',role:'Fullstack',status:'Applied',score:72,createdAt:'2025-03-20'},
+  {id:10,name:'Jack Brown',email:'jack@acme.com',role:'Frontend',status:'Rejected',score:38,createdAt:'2025-03-22'},
+  {id:11,name:'Kira Ngo',email:'kira@acme.com',role:'Backend',status:'Interviewing',score:81,createdAt:'2025-04-01'},
+  {id:12,name:'Liam Osei',email:'liam@acme.com',role:'Fullstack',status:'Hired',score:90,createdAt:'2025-04-03'},
+];
+let nextId=13;
+let page=1;const PER=8;
+let search='',roleF='',statusF='';
+let editId=null,delId=null;
+
+function filtered(){
+  return data.filter(d=>{
+    const q=search.toLowerCase();
+    if(q&&!d.name.toLowerCase().includes(q)&&!d.email.toLowerCase().includes(q))return false;
+    if(roleF&&d.role!==roleF)return false;
+    if(statusF&&d.status!==statusF)return false;
+    return true;
+  });
+}
+
+function initials(n){return n.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2)}
+function fmtDate(s){const d=new Date(s);return d.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'})}
+
+function renderStats(){
+  const all=data;
+  const hired=all.filter(d=>d.status==='Hired').length;
+  const avg=all.length?Math.round(all.reduce((a,d)=>a+d.score,0)/all.length):0;
+  const interviewing=all.filter(d=>d.status==='Interviewing').length;
+  document.getElementById('statsGrid').innerHTML=`
+    <div class="stat"><div class="stat-label">Total interns</div><div class="stat-val blue">${all.length}</div></div>
+    <div class="stat"><div class="stat-label">Average score</div><div class="stat-val" style="color:#534AB7">${avg}</div></div>
+    <div class="stat"><div class="stat-label">Hired</div><div class="stat-val green">${hired}</div></div>
+    <div class="stat"><div class="stat-label">Interviewing</div><div class="stat-val amber">${interviewing}</div></div>`;
+}
+
+function renderTable(){
+  const rows=filtered();
+  const total=rows.length;
+  const pages=Math.max(1,Math.ceil(total/PER));
+  if(page>pages)page=1;
+  const slice=rows.slice((page-1)*PER,page*PER);
+  const ta=document.getElementById('tableArea');
+  if(!rows.length){
+    ta.innerHTML=`<div class="empty"><i class="ti ti-users-group" aria-hidden="true"></i>No interns found.<br><span style="font-size:12px">Try adjusting your filters.</span></div>`;
+    document.getElementById('pagerArea').innerHTML='';
+    return;
+  }
+  ta.innerHTML=`<table>
+    <thead><tr>
+      <th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Score</th><th>Joined</th><th style="width:90px">Actions</th>
+    </tr></thead>
+    <tbody>${slice.map(d=>`
+    <tr>
+      <td><div class="name-cell"><div class="avatar">${initials(d.name)}</div><span style="font-weight:500">${d.name}</span></div></td>
+      <td style="color:var(--color-text-secondary)">${d.email}</td>
+      <td><span class="badge ${ROLE_CLS[d.role]}">${d.role}</span></td>
+      <td><span class="badge ${ST_CLS[d.status]}"><span class="badge-dot" style="background:currentColor;opacity:0.7"></span>${d.status}</span></td>
+      <td style="min-width:120px"><div class="score-wrap"><div class="score-bar"><div class="score-fill" style="width:${d.score}%;background:${SCORE_COLOR(d.score)}"></div></div><span class="score-num" style="color:${SCORE_COLOR(d.score)}">${d.score}</span></div></td>
+      <td style="color:var(--color-text-secondary)">${fmtDate(d.createdAt)}</td>
+      <td><div style="display:flex;gap:4px">
+        <button class="btn sm" onclick="openEdit(${d.id})"><i class="ti ti-edit" aria-hidden="true"></i></button>
+        <button class="btn sm danger" onclick="openDel(${d.id})"><i class="ti ti-trash" aria-hidden="true"></i></button>
+      </div></td>
+    </tr>`).join('')}
+    </tbody></table>`;
+
+  const pageNums=[];
+  for(let i=1;i<=pages;i++){
+    if(i===1||i===pages||(i>=page-1&&i<=page+1))pageNums.push(i);
+    else if(pageNums[pageNums.length-1]!=='...')pageNums.push('...');
+  }
+  document.getElementById('pagerArea').innerHTML=`
+    <span>Showing ${(page-1)*PER+1}–${Math.min(page*PER,total)} of ${total}</span>
+    <div class="page-btns">
+      <button class="page-btn" onclick="goPage(${page-1})" ${page===1?'disabled':''}>← Prev</button>
+      ${pageNums.map(p=>p==='...'?`<span style="padding:4px 6px;font-size:12px;color:var(--color-text-secondary)">…</span>`:`<button class="page-btn ${p===page?'active':''}" onclick="goPage(${p})">${p}</button>`).join('')}
+      <button class="page-btn" onclick="goPage(${page+1})" ${page===pages||pages===0?'disabled':''}>Next →</button>
+    </div>`;
+}
+
+function goPage(p){page=p;renderTable()}
+
+function render(){renderStats();renderTable()}
+
+function resetForm(){
+  document.getElementById('f_name').value='';
+  document.getElementById('f_email').value='';
+  document.getElementById('f_role').value='Frontend';
+  document.getElementById('f_status').value='Applied';
+  document.getElementById('f_score').value=50;
+  document.getElementById('scoreLabel').textContent='50';
+  document.getElementById('formErr').style.display='none';
+}
+
+function showErr(msg){
+  const e=document.getElementById('formErr');
+  e.innerHTML=`<span>${msg}</span>`;
+  e.style.display='flex';
+}
+
+function openAdd(){
+  editId=null;
+  resetForm();
+  document.getElementById('modalTitle').textContent='Add new intern';
+  document.getElementById('submitLabel').textContent='Add intern';
+  document.getElementById('addModal').style.display='flex';
+}
+
+function openEdit(id){
+  const d=data.find(x=>x.id===id);if(!d)return;
+  editId=id;
+  document.getElementById('f_name').value=d.name;
+  document.getElementById('f_email').value=d.email;
+  document.getElementById('f_role').value=d.role;
+  document.getElementById('f_status').value=d.status;
+  document.getElementById('f_score').value=d.score;
+  document.getElementById('scoreLabel').textContent=d.score;
+  document.getElementById('formErr').style.display='none';
+  document.getElementById('modalTitle').textContent='Edit intern';
+  document.getElementById('submitLabel').textContent='Save changes';
+  document.getElementById('addModal').style.display='flex';
+}
+
+function openDel(id){
+  const d=data.find(x=>x.id===id);if(!d)return;
+  delId=id;
+  document.getElementById('delName').textContent=d.name;
+  document.getElementById('delModal').style.display='flex';
+}
+
+function validateForm(){
+  const name=document.getElementById('f_name').value.trim();
+  const email=document.getElementById('f_email').value.trim();
+  if(name.length<2){showErr('Name must be at least 2 characters.');return false;}
+  if(!/^\S+@\S+\.\S+$/.test(email)){showErr('Please enter a valid email address.');return false;}
+  const dup=data.find(d=>d.email.toLowerCase()===email.toLowerCase()&&d.id!==editId);
+  if(dup){showErr(`Email already exists (${dup.name}).`);return false;}
+  return true;
+}
+
+document.getElementById('f_score').addEventListener('input',e=>{
+  document.getElementById('scoreLabel').textContent=e.target.value;
+});
+
+document.getElementById('openAdd').addEventListener('click',openAdd);
+document.getElementById('closeModal').addEventListener('click',()=>{document.getElementById('addModal').style.display='none'});
+document.getElementById('cancelModal').addEventListener('click',()=>{document.getElementById('addModal').style.display='none'});
+document.getElementById('closeDelModal').addEventListener('click',()=>{document.getElementById('delModal').style.display='none'});
+document.getElementById('cancelDel').addEventListener('click',()=>{document.getElementById('delModal').style.display='none'});
+
+document.getElementById('addModal').addEventListener('click',e=>{if(e.target===document.getElementById('addModal'))document.getElementById('addModal').style.display='none'});
+document.getElementById('delModal').addEventListener('click',e=>{if(e.target===document.getElementById('delModal'))document.getElementById('delModal').style.display='none'});
+
+document.getElementById('submitForm').addEventListener('click',()=>{
+  if(!validateForm())return;
+  const name=document.getElementById('f_name').value.trim();
+  const email=document.getElementById('f_email').value.trim();
+  const role=document.getElementById('f_role').value;
+  const status=document.getElementById('f_status').value;
+  const score=parseInt(document.getElementById('f_score').value,10);
+  if(editId){
+    const idx=data.findIndex(d=>d.id===editId);
+    data[idx]={...data[idx],name,email,role,status,score};
+  }else{
+    data.push({id:nextId++,name,email,role,status,score,createdAt:new Date().toISOString().slice(0,10)});
+  }
+  document.getElementById('addModal').style.display='none';
+  render();
+});
+
+document.getElementById('confirmDel').addEventListener('click',()=>{
+  data=data.filter(d=>d.id!==delId);
+  document.getElementById('delModal').style.display='none';
+  render();
+});
+
+let searchTimer;
+document.getElementById('searchInput').addEventListener('input',e=>{
+  clearTimeout(searchTimer);
+  searchTimer=setTimeout(()=>{search=e.target.value;page=1;renderTable();},300);
+});
+document.getElementById('roleFilter').addEventListener('change',e=>{roleF=e.target.value;page=1;renderTable()});
+document.getElementById('statusFilter').addEventListener('change',e=>{statusF=e.target.value;page=1;renderTable()});
+
+render();
+</script>
