@@ -1,8 +1,8 @@
 # Candidate Submission Template
 
 ## Candidate Information
-- Full Name:
-- Email:
+- Full Name:Syed Jawad Uddin   
+- Email: syedjawaduddin100@gmail.com
 - GitHub Profile Link:
 - Demo Link (if deployed):
 - Submission Date:
